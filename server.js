@@ -1,63 +1,28 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import express from 'express';
-import { getDogs, insertDog, deleteDog, updateDog } from './db.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express()
 const port = process.env.PORT || 5001
 
+import { router as userRouter } from './src/routes/users.js'
+import { router as accountRouter } from './src/routes/accounts.js'
+import { router as transactionRouter } from './src/routes/transactions.js'
+
+
 app.use(express.json()); // Parse JSON bodies
 app.use(express.static(path.join(__dirname, 'dist'))); // Serve static files from 'dist'
 
+app.use('/', userRouter)
+app.use('/', accountRouter)
+app.use('/', transactionRouter)
 
 ///////////////////////////////// Error Handling /////////////////////////////////
 app.use((err, req, res, next) => {
     res.status(err.status || 500);
     res.json({ error: err.message });
 });
-
-///////////////////////////////// Routes /////////////////////////////////
-
-app.get('/dogs', (req, res) => {
-    try {
-        getDogs().then(dogs => res.json(dogs))
-    } catch (e) {
-        res.json([])
-    }
-})
-
-app.post('/insertDog', (req, res) => {
-    try {
-        insertDog(req.body).then(() => res.json({ 'inserted': true }))
-    } catch (e) {
-        res.json({ 'inserted': false })
-    }
-})
-
-
-app.delete('/deleteDog', (req, res) => {
-    console.log(req.body)
-    try {
-        deleteDog(req.body).then(() => res.json({ 'deleted': true }))
-    } catch (e) {
-        res.json({ 'deleted': false })
-    }
-})
-
-
-app.patch('/updateDog', (req, res) => {
-    console.log(req.body)
-    const { id, updates } = req.body
-    // console.log(id, updates)
-    try {
-        updateDog(id, updates).then(() => res.json({ 'updated': true }))
-    } catch (e) {
-        res.json({ 'updated': false })
-    }
-})
-
-
 
 
 
