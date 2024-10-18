@@ -1,0 +1,15 @@
+td{
+  color: black !important;
+}
+
+.custom-btn, .custom-btn:hover{
+  background-color: #333 !important;
+  color:white !important;
+}
+
+.edit-btn{
+  background-color: orange;
+}
+.delete-btn{
+  background-color: red;
+}
