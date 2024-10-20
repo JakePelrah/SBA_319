@@ -2,7 +2,7 @@ import dotenv from 'dotenv'
 import { MongoClient, ObjectId } from "mongodb";
 dotenv.config()
 
-const client = new MongoClient(process.env.URL)
+const client = new MongoClient(process.env.MONGO_CONNECTION_URL)
 
 let conn;
 try {
@@ -80,11 +80,15 @@ await db.createCollection("transactions", {
         $jsonSchema: {
             bsonType: "object",
             title: "User Validation",
-            required: ["accountId", "amount", "category", "type", "created"],
+            required: ["accountId", "transactionId", "amount", "category", "type", "created"],
             properties: {
                 accountId: {
                     bsonType: "int",
                     description: "accountId",
+                },
+                transactionId: {
+                    bsonType: "string",
+                    description: "transactionId",
                 },
                 amount: {
                     bsonType: "decimal",
@@ -155,9 +159,9 @@ export async function updateTransaction(id, updates) {
 
 
 ////////////////////////////////////// DELETE //////////////////////////////////////
-export async function deleteTransaction(id) {
+export async function deleteTransaction(transactionId) {
     const collection = db.collection('transactions')
-    const results = collection.deleteOne({ _id: ObjectId.createFromHexString(id) })
+    const results = collection.deleteOne({ transactionId })
     return results
 }
 

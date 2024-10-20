@@ -11,8 +11,3 @@ router.get('/accounts/:userId', (req, res) => {
         res.json([])
     }
 })
-
-
-// router.post()
-// router.patch()
-// router.delete()

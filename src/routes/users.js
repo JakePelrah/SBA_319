@@ -19,8 +19,3 @@ router.get('/user/:userId', (req, res) => {
         res.json(null)
     }
 })
-
-
-// router.post()
-// router.patch()
-// router.delete()

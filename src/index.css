@@ -35,3 +35,8 @@ tr{
   font-weight: bold;
   font-size: 2em;
 }
+
+.btn{
+  background-color: aliceblue;
+  color: var(--bg-color);
+}
