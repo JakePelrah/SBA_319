@@ -5,8 +5,6 @@ export default function Account() {
     const [category, setCategory] = useState('')
     const [amount, setAmount] = useState(0)
     const [type, setType] = useState('')
-
-
     const [transactions, setTransactions] = useState([])
     const { userId, accountId } = useParams()
 
@@ -40,13 +38,23 @@ export default function Account() {
         ).then(() => fetchTransactions())
     }
 
+
+    function edit(transactionId) {
+        alert(transactionId)
+        // fetch(`/transactions/${transactionId}`,
+        //     { method: "PATCH" }
+        // ).then(() => fetchTransactions())
+    }
+
+
     const renderedTransactions = transactions?.map(transaction =>
         <tr>
             <td>{transaction.category}</td>
             <td>{transaction.type}</td>
             <td>{transaction.amount.$numberDecimal}</td>
             <td>{new Date(transaction.created).toLocaleDateString()}</td>
-            <td><button onClick={() => remove(transaction.transactionId)} className="btn">Delete</button></td>
+            <td><button onClick={() => remove(transaction.transactionId)} className="btn">Delete</button>
+                <button onClick={() => edit(transaction.transactionId)} className="btn">Edit</button></td>
 
         </tr>)
 
@@ -85,7 +93,6 @@ export default function Account() {
                         <th scope="col">Amount</th>
                         <th scope="col">Created</th>
                         <th scope="col"></th>
-
                     </tr>
                 </thead>
                 <tbody>

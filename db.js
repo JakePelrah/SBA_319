@@ -157,7 +157,6 @@ export async function updateTransaction(id, updates) {
     const results = collection.updateOne({ _id: ObjectId.createFromHexString(id) }, { $set: updates })
 }
 
-
 ////////////////////////////////////// DELETE //////////////////////////////////////
 export async function deleteTransaction(transactionId) {
     const collection = db.collection('transactions')
