@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
-import './App.css'
+import { useNavigate } from 'react-router-dom'
 
 
 function App() {
   const [users, setUsers] = useState([])
-
+  const navigate = useNavigate()
 
   useEffect(() => {
     fetchUsers()
@@ -16,28 +16,35 @@ function App() {
       .then(setUsers)
   }
 
+  function rowClick(userId) {
+    navigate(`user/${userId}`)
+  }
 
   const renderedUsers = users?.map(user =>
-    <tr>
-      {JSON.stringify(user)}
+    <tr onClick={() => rowClick(user.userId)}>
       <td>{user.userId}</td>
-      <td>{user.first + ' ' + user.last}</td>
-      <td>{user.timestamp.$timestamp}</td>
+      <td>{user.first}</td>
+      <td>{user.last}</td>
+      <td>{new Date(user.created).toLocaleDateString()}</td>
     </tr>)
 
+
   return (
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">UserId</th>
-          <th scope="col">Full Name</th>
-          <th scope="col">Created</th>
-        </tr>
-      </thead>
-      <tbody>
-        {renderedUsers}
-      </tbody>
-    </table>
+    <div className='container'>
+      <table class="table table-hover table-responsive mt-5">
+        <thead>
+          <tr>
+            <th scope="col">UserId</th>
+            <th scope="col">First</th>
+            <th scope="col">Last</th>
+            <th scope="col">Created</th>
+          </tr>
+        </thead>
+        <tbody>
+          {renderedUsers}
+        </tbody>
+      </table>
+    </div>
 
   )
 }

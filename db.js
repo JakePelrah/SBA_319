@@ -15,19 +15,15 @@ let db = conn.db('sba319')
 
 ////////////////////////////////////// Validation //////////////////////////////////////
 await db.createCollection("users", {
-    // Pass the validator object
     validator: {
-        // Use the $jsonSchema operator
         $jsonSchema: {
             bsonType: "object",
             title: "User Validation",
-            // List required fields
-            required: ["userId", "first", "last", "timestamp"],
-            // Properties object contains document fields
+            required: ["userId", "first", "last", "created"],
             properties: {
                 userId: {
-                    bsonType: "string",
-                    description: "userId is required, and must be a string",
+                    bsonType: "int",
+                    description: "userId",
                 },
                 first: {
                     bsonType: "string",
@@ -37,9 +33,9 @@ await db.createCollection("users", {
                     bsonType: "string",
                     description: "User last name",
                 },
-                timestamp: {
-                    bsonType: "timestamp",
-                    description: "Account creation timestamp"
+                created: {
+                    bsonType: "date",
+                    description: "User creation date"
                 }
             },
         },
@@ -51,15 +47,15 @@ await db.createCollection("accounts", {
         $jsonSchema: {
             bsonType: "object",
             title: "Account Validation",
-            required: ["accountId", "userId", "accountType", "balance"],
+            required: ["accountId", "userId", "accountType", "balance", "created"],
             properties: {
                 accountId: {
-                    bsonType: "string",
-                    description: "accountId is required and must be a string",
+                    bsonType: "int",
+                    description: "accountId",
                 },
                 userId: {
-                    bsonType: "string",
-                    description: "userId is required, referencing the user",
+                    bsonType: "int",
+                    description: "userId",
                 },
                 accountType: {
                     enum: ["CHECKING", "SAVINGS", "CREDIT"],
@@ -69,9 +65,9 @@ await db.createCollection("accounts", {
                     bsonType: "decimal",
                     description: "Current balance of the account",
                 },
-                createdAt: {
-                    bsonType: "timestamp",
-                    description: "Timestamp when the account was created"
+                created: {
+                    bsonType: "date",
+                    description: "Account creation date"
                 }
             },
         },
@@ -84,11 +80,11 @@ await db.createCollection("transactions", {
         $jsonSchema: {
             bsonType: "object",
             title: "User Validation",
-            required: ["userId", "amount", "category", "type", "timestamp"],
+            required: ["accountId", "amount", "category", "type", "created"],
             properties: {
-                userId: {
-                    bsonType: "string",
-                    description: "userId is required, and must be a string",
+                accountId: {
+                    bsonType: "int",
+                    description: "accountId",
                 },
                 amount: {
                     bsonType: "decimal",
@@ -104,11 +100,11 @@ await db.createCollection("transactions", {
                         "EXPENSE",
                         "TRANSFER",
                     ],
-                    description: "Transaction category",
+                    description: "Transaction type",
                 },
-                timestamp: {
-                    bsonType: "timestamp",
-                    description: "transaction timestamp"
+                created: {
+                    bsonType: "date",
+                    description: "Transaction creation date"
                 }
             },
         },
@@ -122,14 +118,25 @@ export async function getUsers() {
     const results = collection.find({}).toArray()
     return results
 }
-export async function getAccounts() {
-    const collection = db.collection('accounts')
-    const results = collection.find({}).toArray()
+
+export async function getUser(userId) {
+    userId = parseInt(userId)
+    const collection = db.collection('users')
+    const results = collection.findOne({ userId })
     return results
 }
-export async function getTransactions() {
+
+export async function getAccount(userId) {
+    userId = parseInt(userId)
+    const collection = db.collection('accounts')
+    const results = await collection.find({ userId }).toArray()
+    return results
+}
+
+export async function getTransactions(accountId) {
+    accountId = parseInt(accountId)
     const collection = db.collection('transactions')
-    const results = collection.find({}).toArray()
+    const results = collection.find({ accountId }).toArray()
     return results
 }
 
@@ -158,7 +165,7 @@ export async function deleteUser(id) {
 }
 export async function deleteAccounts(id) {
     const collection = db.collection('accounts')
-    const results =  collection.deleteOne({ _id: ObjectId.createFromHexString(id) })
+    const results = collection.deleteOne({ _id: ObjectId.createFromHexString(id) })
     return results
 }
 export async function deleteTransaction(id) {
@@ -170,7 +177,7 @@ export async function deleteTransaction(id) {
 ////////////////////////////////////// UPDATE //////////////////////////////////////
 export async function updateUser(id, updates) {
     const collection = db.collection('users')
-    const results =collection.updateOne({ _id: ObjectId.createFromHexString(id) }, { $set: updates })
+    const results = collection.updateOne({ _id: ObjectId.createFromHexString(id) }, { $set: updates })
 }
 export async function updateAccount(id, updates) {
     const collection = db.collection('accounts')

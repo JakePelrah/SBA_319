@@ -1,11 +1,12 @@
 import express from 'express'
-import { getAccounts } from '../../db.js'
+import { getAccount } from '../../db.js'
 export const router = express.Router()
 
 
-router.get('/accounts', (req, res) => {
+router.get('/accounts/:userId', (req, res) => {
+    const { userId } = req.params
     try {
-        getAccounts().then(accounts=>res.json(accounts))
+        getAccount(userId).then(accounts => res.json(accounts))
     } catch (e) {
         res.json([])
     }
