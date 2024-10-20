@@ -4,14 +4,10 @@ import './App.css'
 
 function App() {
   const [users, setUsers] = useState([])
-  const [accounts, setAccounts] = useState([])
-  const [transactions, setTransactions] = useState([])
 
 
   useEffect(() => {
     fetchUsers()
-    fetchAccounts()
-    fetchTransactions()
   }, [])
 
   function fetchUsers() {
@@ -20,30 +16,29 @@ function App() {
       .then(setUsers)
   }
 
-  function fetchAccounts() {
-    fetch('/accounts')
-      .then(res => res.json())
-      .then(setAccounts)
-  }
 
-  function fetchTransactions() {
-    fetch('/transactions')
-      .then(res => res.json())
-      .then(setTransactions)
-  }
-
-  const renderedUsers = users?.map(user => <div>{JSON.stringify(user)}</div>)
-  const renderedAccounts = accounts?.map(account => <div>{JSON.stringify(account)}</div>)
-  const renderedTransactions = transactions?.map(transaction => <div>{JSON.stringify(transaction)}</div>)
+  const renderedUsers = users?.map(user =>
+    <tr>
+      {JSON.stringify(user)}
+      <td>{user.userId}</td>
+      <td>{user.first + ' ' + user.last}</td>
+      <td>{user.timestamp.$timestamp}</td>
+    </tr>)
 
   return (
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">UserId</th>
+          <th scope="col">Full Name</th>
+          <th scope="col">Created</th>
+        </tr>
+      </thead>
+      <tbody>
+        {renderedUsers}
+      </tbody>
+    </table>
 
-    <div>
-      {renderedUsers}
-      {renderedAccounts}
-      {renderedTransactions}
-
-    </div>
   )
 }
 
