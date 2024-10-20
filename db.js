@@ -141,51 +141,25 @@ export async function getTransactions(accountId) {
 }
 
 ////////////////////////////////////// POST //////////////////////////////////////
-export async function postUser(record) {
-    const collection = db.collection('users')
-    const results = collection.insertOne(record)
-    return results
-}
-export async function postAccount(record) {
-    const collection = db.collection('accounts')
-    const results = collection.insertOne(record)
-    return results
-}
 export async function postTransaction(record) {
     const collection = db.collection('transactions')
     const results = collection.insertOne(record)
     return results
 }
 
+////////////////////////////////////// UPDATE //////////////////////////////////////
+export async function updateTransaction(id, updates) {
+    const collection = db.collection('transactions')
+    const results = collection.updateOne({ _id: ObjectId.createFromHexString(id) }, { $set: updates })
+}
+
+
 ////////////////////////////////////// DELETE //////////////////////////////////////
-export async function deleteUser(id) {
-    const collection = db.collection('users')
-    const results = collection.deleteOne({ _id: ObjectId.createFromHexString(id) })
-    return results
-}
-export async function deleteAccounts(id) {
-    const collection = db.collection('accounts')
-    const results = collection.deleteOne({ _id: ObjectId.createFromHexString(id) })
-    return results
-}
 export async function deleteTransaction(id) {
     const collection = db.collection('transactions')
     const results = collection.deleteOne({ _id: ObjectId.createFromHexString(id) })
     return results
 }
 
-////////////////////////////////////// UPDATE //////////////////////////////////////
-export async function updateUser(id, updates) {
-    const collection = db.collection('users')
-    const results = collection.updateOne({ _id: ObjectId.createFromHexString(id) }, { $set: updates })
-}
-export async function updateAccount(id, updates) {
-    const collection = db.collection('accounts')
-    const results = collection.updateOne({ _id: ObjectId.createFromHexString(id) }, { $set: updates })
-}
-export async function updateTransaction(id, updates) {
-    const collection = db.collection('transactions')
-    const results = collection.updateOne({ _id: ObjectId.createFromHexString(id) }, { $set: updates })
-}
 
 
