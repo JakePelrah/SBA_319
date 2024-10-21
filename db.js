@@ -161,9 +161,17 @@ export async function postTransaction({ accountId, category, type, amount }) {
 }
 
 ////////////////////////////////////// UPDATE //////////////////////////////////////
-export async function updateTransaction(id, updates) {
+export async function patchTransaction(transactionId, record) {
+
+    const transaction = {
+        accountId: parseInt(record.accountId),
+        amount: Decimal128.fromString(record.amount),
+        category: record.category,
+        type: record.type,
+        created: new Date(),
+    };
     const collection = db.collection('transactions')
-    const results = collection.updateOne({ _id: ObjectId.createFromHexString(id) }, { $set: updates })
+    const results = collection.updateOne({ transactionId }, { $set: transaction })
 }
 
 ////////////////////////////////////// DELETE //////////////////////////////////////

@@ -1,16 +1,21 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
+import { Modal } from "bootstrap"
 import { useParams } from "react-router-dom"
+
 export default function Account() {
     const [user, setUser] = useState(null)
     const [category, setCategory] = useState('')
+    const [transactionId, setTransactionId] = useState(null)
     const [amount, setAmount] = useState(null)
     const [type, setType] = useState('')
     const [transactions, setTransactions] = useState([])
     const { userId, accountId } = useParams()
+    const modalRef = useRef(null)
 
     useEffect(() => {
         fetchUser()
         fetchTransactions()
+        modalRef.current = new Modal(modalRef.current)
     }, [])
 
     function fetchUser() {
@@ -51,14 +56,13 @@ export default function Account() {
     }
 
     function edit(transactionId) {
-        alert(transactionId)
-        // fetch(`/transactions/${transactionId}`,
-        //     { method: "PATCH" }
-        // ).then(() => fetchTransactions())
+        setTransactionId(transactionId)
+        modalRef.current.show()
     }
 
     const renderedTransactions = transactions?.map(transaction =>
         <tr>
+            <td>{transaction.transactionId}</td>
             <td>{transaction.category}</td>
             <td>{transaction.type}</td>
             <td>{parseFloat(transaction.amount.$numberDecimal).toFixed(2)}</td>
@@ -69,6 +73,9 @@ export default function Account() {
 
     return (
         <div className='container'>
+
+
+            <EditModal modalRef={modalRef} accountId={accountId} transactionId={transactionId} fetchTransactions={fetchTransactions} />
 
             <div className="user-info text-center mt-4">
                 <span>{user?.first + ' ' + user?.last}</span>
@@ -116,6 +123,7 @@ export default function Account() {
             <table class="table table-responsive mt-5">
                 <thead>
                     <tr>
+                        <th scope="col">Transaction Id</th>
                         <th scope="col">Category</th>
                         <th scope="col">Type</th>
                         <th scope="col">Amount</th>
@@ -129,4 +137,79 @@ export default function Account() {
             </table>
 
         </div>)
+}
+
+
+function EditModal({ modalRef, accountId, transactionId, fetchTransactions }) {
+    const [category, setCategory] = useState('')
+    const [type, setType] = useState('')
+    const [amount, setAmount] = useState(null)
+
+    function save(e) {
+        e.preventDefault()
+        if (category && amount && type && transactionId) {
+            fetch('/transactions', {
+                method: 'PATCH',
+                body: JSON.stringify({ accountId, transactionId, category, type, amount }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(res => res.json())
+                .then(({ patched }) => {
+                    if (patched) {
+                        modalRef.current.hide()
+                        fetchTransactions()
+                        setAmount('')
+                    }
+                })
+        }
+    }
+
+    return (<div ref={modalRef} class="modal fade" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <div class="modal-body">
+                    <div class="row d-flex justify-content-center  mt-4">
+                        <div class="col">
+                            <select onChange={(e) => setCategory(e.target.value)} type="text" class="form-control" >
+                                <option selected value="">Select category</option>
+                                <option value="AUTO">AUTO</option>
+                                <option value="CHECK">CHECK</option>
+                                <option value="COFFEE">COFFEE</option>
+                                <option value="CREDIT CARD">CREDIT CARD</option>
+                                <option value="DENTIST">DENTIST</option>
+                                <option value="ELECTRONICS">ELECTRONICS</option>
+                                <option value="FAST FOOD">FAST FOOD</option>
+                                <option value="GAS">GAS</option>
+                                <option value="HEALTH">HEALTH</option>
+                                <option value="PAYCHECK">PAYCHECK</option>
+                                <option value="TELEVISION">TELEVISION</option>
+                                <option value="UTILITIES">UTILITIES</option>
+                                <option value="VETERINARY">VETERINARY</option>
+                            </select>
+                        </div>
+
+                        <div class="col">
+                            <select onChange={(e) => setType(e.target.value)} type="text" class="form-control" >
+                                <option selected value="">Select transaction type</option>
+                                <option value="INCOME">INCOME</option>
+                                <option value="EXPENSE">EXPENSE</option>
+                                <option value="TRANSFER">TRANSFER</option>
+                            </select>
+                        </div>
+
+                        <div class="col">
+                            <input value={amount} onChange={(e) => setAmount(e.target.value)} type="text" class="form-control" placeholder="0.00" />
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button onClick={save} type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>)
 }
