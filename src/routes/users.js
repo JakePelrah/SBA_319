@@ -2,7 +2,6 @@ import express from 'express'
 import { getUsers, getUser } from '../../db.js'
 export const router = express.Router()
 
-
 router.get('/users', (req, res) => {
     try {
         getUsers().then(users=>res.json(users))

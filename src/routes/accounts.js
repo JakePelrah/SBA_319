@@ -2,7 +2,6 @@ import express from 'express'
 import { getAccount } from '../../db.js'
 export const router = express.Router()
 
-
 router.get('/accounts/:userId', (req, res) => {
     const { userId } = req.params
     try {

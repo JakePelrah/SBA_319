@@ -24,8 +24,6 @@ app.use((err, req, res, next) => {
     res.json({ error: err.message });
 });
 
-
-
 app.get('*', (_req, res) => {
     res.sendFile(path.join(__dirname, 'dist', 'index.html')); // Send index.html for client-side routing
 });

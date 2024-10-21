@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react"
-import { Modal } from "bootstrap"
 import { useParams } from "react-router-dom"
+import { Modal } from "bootstrap"
 
 export default function Account() {
     const [user, setUser] = useState(null)
@@ -170,6 +170,7 @@ function EditModal({ modalRef, accountId, transactionId, fetchTransactions }) {
 
                 <div class="modal-body">
                     <div class="row d-flex justify-content-center  mt-4">
+                      
                         <div class="col">
                             <select onChange={(e) => setCategory(e.target.value)} type="text" class="form-control" >
                                 <option selected value="">Select category</option>
@@ -204,10 +205,12 @@ function EditModal({ modalRef, accountId, transactionId, fetchTransactions }) {
 
                     </div>
                 </div>
+                
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button onClick={save} type="button" class="btn btn-primary">Save changes</button>
                 </div>
+
             </div>
         </div>
     </div>)
