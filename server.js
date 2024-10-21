@@ -11,7 +11,7 @@ import { router as accountRouter } from './src/routes/accounts.js'
 import { router as transactionRouter } from './src/routes/transactions.js'
 
 
-app.use(express.json()); // Parse JSON bodies
+app.use(express.json()); 
 app.use(express.static(path.join(__dirname, 'dist'))); // Serve static files from 'dist'
 
 app.use('/', userRouter)
