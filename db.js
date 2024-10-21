@@ -172,6 +172,7 @@ export async function patchTransaction(transactionId, record) {
     };
     const collection = db.collection('transactions')
     const results = collection.updateOne({ transactionId }, { $set: transaction })
+    return results
 }
 
 ////////////////////////////////////// DELETE //////////////////////////////////////
