@@ -74,7 +74,6 @@ export default function Account() {
     return (
         <div className='container'>
 
-
             <EditModal modalRef={modalRef} accountId={accountId} transactionId={transactionId} fetchTransactions={fetchTransactions} />
 
             <div className="user-info text-center mt-4">
