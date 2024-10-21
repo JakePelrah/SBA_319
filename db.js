@@ -1,5 +1,6 @@
 import dotenv from 'dotenv'
-import { MongoClient, ObjectId } from "mongodb";
+import { Decimal128, MongoClient, ObjectId } from "mongodb";
+import { v4 as uuidv4 } from 'uuid'
 dotenv.config()
 
 const client = new MongoClient(process.env.MONGO_CONNECTION_URL)
@@ -145,9 +146,17 @@ export async function getTransactions(accountId) {
 }
 
 ////////////////////////////////////// POST //////////////////////////////////////
-export async function postTransaction(record) {
+export async function postTransaction({ accountId, category, type, amount }) {
+    const transaction = {
+        accountId: parseInt(accountId),
+        transactionId: uuidv4(),
+        amount: Decimal128.fromString(amount),
+        category,
+        type,
+        created: new Date(),
+    };
     const collection = db.collection('transactions')
-    const results = collection.insertOne(record)
+    const results = collection.insertOne(transaction)
     return results
 }
 

@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom"
 export default function Account() {
     const [user, setUser] = useState(null)
     const [category, setCategory] = useState('')
-    const [amount, setAmount] = useState(0)
+    const [amount, setAmount] = useState(null)
     const [type, setType] = useState('')
     const [transactions, setTransactions] = useState([])
     const { userId, accountId } = useParams()
@@ -28,7 +28,19 @@ export default function Account() {
     function add(e) {
         e.preventDefault()
         if (category && amount && type) {
-            console.log(category, type, amount)
+            fetch('/transactions', {
+                method: 'POST',
+                body: JSON.stringify({ accountId, category, type, amount }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(res => res.json())
+                .then(({ created }) => {
+                    if (created) {
+                        fetchTransactions()
+                        setAmount('')
+                    }
+                })
         }
     }
 
@@ -38,7 +50,6 @@ export default function Account() {
         ).then(() => fetchTransactions())
     }
 
-
     function edit(transactionId) {
         alert(transactionId)
         // fetch(`/transactions/${transactionId}`,
@@ -46,16 +57,14 @@ export default function Account() {
         // ).then(() => fetchTransactions())
     }
 
-
     const renderedTransactions = transactions?.map(transaction =>
         <tr>
             <td>{transaction.category}</td>
             <td>{transaction.type}</td>
-            <td>{transaction.amount.$numberDecimal}</td>
+            <td>{parseFloat(transaction.amount.$numberDecimal).toFixed(2)}</td>
             <td>{new Date(transaction.created).toLocaleDateString()}</td>
-            <td><button onClick={() => remove(transaction.transactionId)} className="btn">Delete</button>
-                <button onClick={() => edit(transaction.transactionId)} className="btn">Edit</button></td>
-
+            <td><button onClick={() => remove(transaction.transactionId)} className="delete-btn btn me-2">Delete</button>
+                <button onClick={() => edit(transaction.transactionId)} className="edit-btn btn">Edit</button></td>
         </tr>)
 
     return (
@@ -65,24 +74,43 @@ export default function Account() {
                 <span>{user?.first + ' ' + user?.last}</span>
             </div>
 
-            <div class="row g-3 mt-4">
+            <div class="row d-flex justify-content-center  mt-4">
                 <div class="col">
-                    <input value={category} onChange={(e) => setCategory(e.target.value)} type="text" class="form-control" placeholder="Category" />
+                    <select onChange={(e) => setCategory(e.target.value)} type="text" class="form-control" >
+                        <option selected value="">Select category</option>
+                        <option value="AUTO">AUTO</option>
+                        <option value="CHECK">CHECK</option>
+                        <option value="COFFEE">COFFEE</option>
+                        <option value="CREDIT CARD">CREDIT CARD</option>
+                        <option value="DENTIST">DENTIST</option>
+                        <option value="ELECTRONICS">ELECTRONICS</option>
+                        <option value="FAST FOOD">FAST FOOD</option>
+                        <option value="GAS">GAS</option>
+                        <option value="HEALTH">HEALTH</option>
+                        <option value="PAYCHECK">PAYCHECK</option>
+                        <option value="TELEVISION">TELEVISION</option>
+                        <option value="UTILITIES">UTILITIES</option>
+                        <option value="VETERINARY">VETERINARY</option>
+                    </select>
                 </div>
+
                 <div class="col">
-                    <select onChange={(e) => setType(e.target.value)} type="text" class="form-control" placeholder="Category">
+                    <select onChange={(e) => setType(e.target.value)} type="text" class="form-control" >
                         <option selected value="">Select transaction type</option>
                         <option value="INCOME">INCOME</option>
                         <option value="EXPENSE">EXPENSE</option>
                         <option value="TRANSFER">TRANSFER</option>
                     </select>
                 </div>
+
                 <div class="col">
-                    <input value={amount} onChange={(e) => setAmount(e.target.value)} type="text" class="form-control" placeholder="Amount" />
+                    <input value={amount} onChange={(e) => setAmount(e.target.value)} type="text" class="form-control" placeholder="0.00" />
                 </div>
+
                 <div class="col">
-                    <button onClick={add} className="btn">ADD</button>
+                    <button onClick={add} className="add-btn btn">ADD</button>
                 </div>
+
             </div>
 
             <table class="table table-responsive mt-5">
@@ -99,5 +127,6 @@ export default function Account() {
                     {renderedTransactions}
                 </tbody>
             </table>
+
         </div>)
 }

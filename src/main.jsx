@@ -1,9 +1,9 @@
-import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import Navbar from './Navbar.jsx';
+import Account from './components/Account.jsx';
+import Navbar from './components/Navbar.jsx';
+import User from './components/User.jsx';
 import App from './App.jsx'
-import User from './User.jsx';
-import Account from './Account.jsx';
+
 import {
   createBrowserRouter,
   RouterProvider,
@@ -33,7 +33,5 @@ const router = createBrowserRouter([
 ]);
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
     <RouterProvider router={router} />
-  </StrictMode>,
 )

@@ -1,11 +1,10 @@
 :root {
-  --nav-color:#143246;
+  --nav-color: #143246;
   --bg-color: #09202A;
   --text-color: white;
 }
 
-html
-body {
+html body {
   background-color: var(--bg-color);
   width: 100vw;
 }
@@ -26,17 +25,32 @@ nav {
 }
 
 
-tr{
+tr {
   cursor: pointer;
 }
 
-.user-info{
+.user-info {
   color: var(--text-color);
   font-weight: bold;
   font-size: 2em;
 }
 
-.btn{
+.btn {
   background-color: aliceblue;
   color: var(--bg-color);
+}
+
+.delete-btn,
+.delete-btn:hover {
+  background-color: red;
+}
+
+.edit-btn,
+.add-btn:hover {
+  background-color: orange;
+}
+
+.add-btn,
+.add-btn:hover {
+  background-color: green;
 }

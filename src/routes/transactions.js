@@ -1,5 +1,5 @@
 import express from 'express'
-import { getTransactions, deleteTransaction } from '../../db.js'
+import { getTransactions, deleteTransaction, postTransaction } from '../../db.js'
 export const router = express.Router()
 
 
@@ -22,20 +22,21 @@ router.delete('/transactions/:accountId', (req, res) => {
 })
 
 router.post('/transactions', (req, res) => {
-    console.log(req.body)
-    // try {
-    //     deleteTransaction(accountId).then(_ => res.json({ deleted: true }))
-    // } catch (e) {
-    //     res.json({ deleted: false })
-    // }
+    let {accountId, category, type, amount } = req.body
+    try {
+        postTransaction({accountId, category, type, amount })
+        .then(_ => res.json({ created: true }))
+    } catch (e) {
+        res.json({ created: false })
+    }
 })
 
-router.patch('/transactions', (req, res) => {
-    console.log(req.body)
-    // try {
-    //     deleteTransaction(accountId).then(_ => res.json({ deleted: true }))
-    // } catch (e) {
-    //     res.json({ deleted: false })
-    // }
-})
+// router.patch('/transactions', (req, res) => {
+//     console.log(req.body)
+//     // try {
+//     //     deleteTransaction(accountId).then(_ => res.json({ deleted: true }))
+//     // } catch (e) {
+//     //     res.json({ deleted: false })
+//     // }
+// })
 
